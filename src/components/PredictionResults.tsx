@@ -90,6 +90,19 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({ results }) => {
   const retainCount = results.filter(r => r.prediction === "retain").length;
   const layoffCount = results.filter(r => r.prediction === "layoff").length;
 
+  // Handle pagination with buttons instead of links when disabled
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+  
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -283,10 +296,15 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({ results }) => {
                   <Pagination>
                     <PaginationContent>
                       <PaginationItem>
-                        <PaginationPrevious 
-                          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        <Button 
+                          onClick={handlePreviousPage} 
+                          variant="outline" 
+                          size="sm"
+                          className={currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}
                           disabled={currentPage === 1}
-                        />
+                        >
+                          Previous
+                        </Button>
                       </PaginationItem>
                       
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -301,10 +319,15 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({ results }) => {
                       ))}
                       
                       <PaginationItem>
-                        <PaginationNext 
-                          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        <Button 
+                          onClick={handleNextPage} 
+                          variant="outline" 
+                          size="sm"
+                          className={currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}
                           disabled={currentPage === totalPages}
-                        />
+                        >
+                          Next
+                        </Button>
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>
